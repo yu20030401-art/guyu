@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>二次元视觉概念生成系统</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 980px; margin: 32px auto; padding: 0 16px; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+    textarea { width: 100%; min-height: 280px; }
+    input, button { margin: 8px 0; }
+    pre { white-space: pre-wrap; background:#fafafa; padding:12px; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <h1>二次元视觉概念生成系统（默认方案）</h1>
+  <div class="card">
+    <form id="f">
+      <label>主题</label><br>
+      <input name="theme" placeholder="例如：反乌托邦机械修女" style="width:100%" required /><br>
+      <label>风格方向</label><br>
+      <input name="style" value="故障艺术、赛博朋克、数字拼贴、实验性平面" style="width:100%" /><br>
+      <label>参考图（可选）</label><br>
+      <input type="file" name="reference_image" accept="image/*" /><br>
+      <button type="submit">生成方案</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Markdown 输出</h3>
+    <textarea id="md"></textarea>
+  </div>
+  <div class="card">
+    <h3>JSON 输出</h3>
+    <pre id="json"></pre>
+  </div>
+
+  <script>
+    const form = document.getElementById('f');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const resp = await fetch('/api/generate', { method: 'POST', body: fd });
+      const data = await resp.json();
+      document.getElementById('md').value = data.markdown || '';
+      document.getElementById('json').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
